@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    
+    var body: some View{
+        MainTabView()
+    }
+}
+
+// カレンダーページを表示
+struct CalendarView: View {
     @State var year = Calendar.current.component(.year, from: Date())
     @State var month = Calendar.current.component(.month, from: Date())
     
@@ -62,6 +68,7 @@ struct ContentView: View {
             Text("\(months[month - 1])").font(.largeTitle)
             Text("Self Introduction")
             Text("\(year)")
+                .padding(.bottom)
             // 曜日表示
             HStack {
                 ForEach(days, id: \.self){ day in
@@ -94,14 +101,49 @@ struct ContentView: View {
                         }
                     }
                 }
-                
             }
-            
         }
     }
-    
 }
 
+// リストページを表示
+struct ListView: View {
+    var body: some View {
+        Text("")
+    }
+}
+
+// 画面下のタブバーを表示
+struct MainTabView: View {
+    var body: some View {
+        TabView {
+            // カレンダーページ
+            CalendarView()
+                .tabItem {
+                    Image(systemName: "calendar")
+                    Text("カレンダー")
+                }
+            // リストページ
+            ListView()
+                .tabItem {
+                    Image(systemName: "")
+                    Text("リスト")
+                }
+            // 通知ページ
+            Text("")
+                .tabItem {
+                    Image(systemName: "bell")
+                    Text("通知")
+                }
+            // 設定ページ
+            Text("")
+                .tabItem {
+                    Image(systemName: "gear")
+                    Text("設定")
+                }
+        }
+    }
+}
 
 #Preview {
     ContentView()
