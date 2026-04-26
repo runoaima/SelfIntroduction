@@ -18,6 +18,10 @@ struct CalendarView: View {
     @State var year = Calendar.current.component(.year, from: Date())
     @State var month = Calendar.current.component(.month, from: Date())
     
+    @State private var showScheduleSheet = false
+    @State private var selectedDay = 1
+    @State private var scheduleText = ""
+    
     let months: [String] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     
@@ -85,7 +89,9 @@ struct CalendarView: View {
                             
                             if index >= 0 && index < dates.count {
                                 Button {
-                                    print("\(dates[index])日が押されました")
+                                    selectedDay = dates[index]
+                                    scheduleText = ""
+                                    showScheduleSheet = true
                                 } label: {
                                     Text("\(dates[index])")
                                         .frame(width: 40, height: 40)
@@ -102,6 +108,38 @@ struct CalendarView: View {
                     }
                 }
             }
+        }
+        
+        // 予定追加ポップ
+        .sheet(isPresented: $showScheduleSheet) {
+            VStack(spacing: 20) {
+                Text("\(year)年 \(month)月 \(selectedDay)日の予定")
+                    .font(.title2)
+                    .bold()
+                
+                TextField("予定を入力", text: $scheduleText)
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
+                
+                Button {
+                    showScheduleSheet = false
+                } label: {
+                    Text("保存")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding()
+                
+                Button("キャンセル") {
+                    showScheduleSheet = false
+                }
+                
+                Spacer()
+            }
+            .padding()
         }
     }
 }
