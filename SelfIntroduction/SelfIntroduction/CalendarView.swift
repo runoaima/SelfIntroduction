@@ -1,0 +1,160 @@
+//
+//  CalendarView.swift
+//  SelfIntroduction
+//
+//  Created by Haruto Fukumoto on 2026/04/26.
+//
+
+import Foundation
+import SwiftUI
+
+// カレンダーページを表示
+struct CalendarView: View {
+    @State var year = Calendar.current.component(.year, from: Date())
+    @State var month = Calendar.current.component(.month, from: Date())
+    
+    @State private var showScheduleSheet = false
+    @State private var selectedDay = 1
+    @State private var scheduleText = ""
+    
+    @State var currentDate = Date()
+    
+    let months: [String] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    
+    let days: [String] = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+    
+    let calendar = Calendar.current
+    
+    var body: some View {
+        GeometryReader { geometry in
+            
+            let newdate = calendar.date(from: DateComponents(year: year, month: month))!
+            let firstDay = calendar.date(from: DateComponents(year: year, month: month, day: 1))!
+            
+            let newdates = calendar.range(of: .day, in: .month, for: newdate)!.count
+            let newday = calendar.component(.weekday, from: firstDay)
+            let dates = Array(1...newdates)
+            
+            let screenWidth = geometry.size.width
+            
+            
+            VStack {
+                
+                HStack {
+                    Button {
+                        if month == 1 {
+                            year = year - 1
+                            month = 12
+                        } else {
+                            month = month - 1
+                        }
+                        changeMonth(-1)
+                    } label: {
+                        Text("<")
+                            .padding()
+                            .font(.title)
+                    }
+                    
+                    Spacer()
+                    
+                    Button {
+                        if month == 12 {
+                            year = year + 1
+                            month = 1
+                        } else {
+                            month = month + 1
+                        }
+                        changeMonth(1)
+                    } label: {
+                        Text(">")
+                            .padding()
+                            .font(.title)
+                    }
+                }
+                MonthView(currentDate: $currentDate)
+                Text("Self Introduction")
+                Text("\(year)")
+                    .padding(.bottom)
+                // 曜日表示
+                HStack {
+                    ForEach(days, id: \.self){ day in
+                        Text(day).frame(maxWidth: .infinity, alignment: .center)
+                    }
+                }
+                // 日付表示
+                VStack(spacing: 0) {
+                    
+                    ForEach(0...5, id: \.self) { i in
+                        HStack(spacing: 0) {
+                            ForEach(1...7, id: \.self) { j in
+                                let index = i * 7 + j - newday
+                                
+                                if index >= 0 && index < dates.count {
+                                    Button {
+                                        selectedDay = dates[index]
+                                        scheduleText = ""
+                                        showScheduleSheet = true
+                                    } label: {
+                                        Text("\(dates[index])")
+                                            .frame(width: screenWidth/7, height: screenWidth/7)
+                                            .foregroundStyle(.black)
+                                            .background(Color.accentColor)
+                                            .clipShape(Circle())
+                                        
+                                    }
+                                } else {
+                                    Text("")
+                                        .frame(width: screenWidth/7, height: screenWidth/7)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 予定追加ポップ
+            .sheet(isPresented: $showScheduleSheet) {
+                VStack(spacing: 20) {
+                    Text("\(year)年 \(month)月 \(selectedDay)日の予定")
+                        .font(.title2)
+                        .bold()
+                    
+                    TextField("予定を入力", text: $scheduleText)
+                        .textFieldStyle(.roundedBorder)
+                        .padding()
+                    
+                    Button {
+                        showScheduleSheet = false
+                    } label: {
+                        Text("保存")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    .padding()
+                    
+                    Button("キャンセル") {
+                        showScheduleSheet = false
+                    }
+                    
+                    Spacer()
+                }
+            }.frame(width: geometry.size.width, height: geometry.size.height)
+        }
+        
+    }
+    
+    func changeMonth(_ value: Int) {
+        if let newDate = calendar.date(byAdding: .month, value: value, to: currentDate) {
+            currentDate = newDate
+        }
+    }
+}
+
+
+#Preview {
+    ContentView()
+}
