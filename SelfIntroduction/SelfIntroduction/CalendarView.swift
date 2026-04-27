@@ -8,6 +8,17 @@
 import Foundation
 import SwiftUI
 
+// Identifiableデータを識別できるように
+struct ScheduleItem: Identifiable {
+    let id: UUID
+    let year: Int
+    let month: Int
+    let day: Int
+    let startTime: String
+    let endTime: String
+    let text: String
+}
+
 // カレンダーページを表示
 struct CalendarView: View {
     @State var year = Calendar.current.component(.year, from: Date())
@@ -16,6 +27,9 @@ struct CalendarView: View {
     @State private var showScheduleSheet = false
     @State private var selectedDay = 1
     @State private var scheduleText = ""
+    @State private var startTime = "00:00"
+    @State private var endTime = "00:30"
+    @Binding var schedules: [ScheduleItem]
     
     @State var currentDate = Date()
     
@@ -25,6 +39,7 @@ struct CalendarView: View {
     let days: [String] = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
     
     let calendar = Calendar.current
+    var times:[String]{generateTimes()}
     
     var body: some View {
         GeometryReader { geometry in
@@ -119,12 +134,37 @@ struct CalendarView: View {
                     Text("\(year)年 \(month)月 \(selectedDay)日の予定")
                         .font(.title2)
                         .bold()
+                    Text("開始時間")
+                    Picker("開始時間", selection: $startTime) {
+                        ForEach(times, id: \.self) { time in
+                            Text(time)
+                        }
+                    }
+                    Text("終了時間")
+                    Picker("終了時間", selection: $endTime) {
+                        ForEach(times, id: \.self) { time in
+                            Text(time)
+                        }
+                    }
+                    
                     
                     TextField("予定を入力", text: $scheduleText)
                         .textFieldStyle(.roundedBorder)
                         .padding()
                     
                     Button {
+                        let newSchedule = ScheduleItem(
+                            id: UUID(),
+                            year: year,
+                            month: month,
+                            day: selectedDay,
+                            startTime: startTime,
+                            endTime: endTime,
+                            text: scheduleText
+                        )
+                        
+                        print(newSchedule.text)
+                        schedules.append(newSchedule)
                         showScheduleSheet = false
                     } label: {
                         Text("保存")
@@ -152,9 +192,14 @@ struct CalendarView: View {
             currentDate = newDate
         }
     }
-}
-
-
-#Preview {
-    ContentView()
+    
+    func generateTimes() -> [String] {
+        var times: [String] = []
+        
+        for hour in 0..<24 {
+            times.append(String(format: "%02d:00", hour))
+            times.append(String(format: "%02d:30", hour))
+        }
+        return times
+    }
 }

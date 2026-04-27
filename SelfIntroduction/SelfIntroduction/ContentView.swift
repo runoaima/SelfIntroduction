@@ -8,13 +8,43 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var schedules: [ScheduleItem] = []
     var body: some View{
-        GeometryReader { geometry in
-            MainTabView()
+        TabView {
+            // カレンダーページ
+            SelfIntroductionView()
+                .tabItem {
+                    Image(systemName: "person")
+                    Text("自己紹介")
+                }
+            // カレンダーページ
+            CalendarView(schedules: $schedules)
+                .tabItem {
+                    Image(systemName: "calendar")
+                    Text("カレンダー")
+                }
+            // リストページ
+            ListView(schedules: $schedules)
+                .tabItem {
+                    Image(systemName: "list.bullet")
+                    Text("リスト")
+                }
+            // 通知ページ
+            Text("")
+                .tabItem {
+                    Image(systemName: "bell")
+                    Text("通知")
+                }
+            // 設定ページ
+            Text("")
+                .tabItem {
+                    Image(systemName: "gear")
+                    Text("設定")
+                }
         }
     }
 }
 
 #Preview {
-    ContentView()
+    CalendarView(schedules: .constant([]))
 }
