@@ -163,7 +163,6 @@ struct CalendarView: View {
                             text: scheduleText
                         )
                         
-                        print(newSchedule.text)
                         schedules.append(newSchedule)
                         showScheduleSheet = false
                     } label: {
