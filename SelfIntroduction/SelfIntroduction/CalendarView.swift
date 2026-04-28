@@ -23,6 +23,7 @@ struct ScheduleItem: Identifiable {
 struct CalendarView: View {
     @State var year = Calendar.current.component(.year, from: Date())
     @State var month = Calendar.current.component(.month, from: Date())
+    @State var day = Calendar.current.component(.day, from: Date())
     
     @State private var showScheduleSheet = false
     @State private var selectedDay = 1
@@ -134,18 +135,21 @@ struct CalendarView: View {
                     Text("\(year)年 \(month)月 \(selectedDay)日の予定")
                         .font(.title2)
                         .bold()
+                        .padding(.top)
                     Text("開始時間")
                     Picker("開始時間", selection: $startTime) {
                         ForEach(times, id: \.self) { time in
                             Text(time)
+                                
                         }
-                    }
+                    }.foregroundStyle(.black)
                     Text("終了時間")
                     Picker("終了時間", selection: $endTime) {
                         ForEach(times, id: \.self) { time in
                             Text(time)
+                                
                         }
-                    }
+                    }.foregroundStyle(.black)
                     
                     
                     TextField("予定を入力", text: $scheduleText)
@@ -177,7 +181,7 @@ struct CalendarView: View {
                     
                     Button("キャンセル") {
                         showScheduleSheet = false
-                    }
+                    }.foregroundStyle(.black)
                     
                     Spacer()
                 }
@@ -202,3 +206,4 @@ struct CalendarView: View {
         return times
     }
 }
+

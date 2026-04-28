@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State var schedules: [ScheduleItem] = []
+    
     var body: some View{
         TabView {
             // カレンダーページ
@@ -30,21 +31,20 @@ struct ContentView: View {
                     Text("リスト")
                 }
             // 通知ページ
-            Text("")
-                .tabItem {
-                    Image(systemName: "bell")
-                    Text("通知")
-                }
-            // 設定ページ
-            Text("")
-                .tabItem {
-                    Image(systemName: "gear")
-                    Text("設定")
-                }
+//            NotificationView(
+//                            schedules: $schedules,
+//                            year: $year,
+//                            month: $month,
+//                            day: $day
+//                        )
+//                .tabItem {
+//                    Image(systemName: "bell")
+//                    Text("通知")
+//                }
         }
     }
 }
 
 #Preview {
-    CalendarView(schedules: .constant([]))
+    ContentView()
 }
