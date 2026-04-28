@@ -10,7 +10,7 @@ import SwiftUI
 
 // Identifiableデータを識別できるように
 struct ScheduleItem: Identifiable {
-    let id: UUID
+    let id = UUID()
     let year: Int
     let month: Int
     let day: Int
@@ -40,7 +40,7 @@ struct CalendarView: View {
     let days: [String] = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
     
     let calendar = Calendar.current
-    var times:[String]{generateTimes()}
+    var times = generateTimes()
     
     var body: some View {
         GeometryReader { geometry in
@@ -158,7 +158,6 @@ struct CalendarView: View {
                     
                     Button {
                         let newSchedule = ScheduleItem(
-                            id: UUID(),
                             year: year,
                             month: month,
                             day: selectedDay,
@@ -195,15 +194,14 @@ struct CalendarView: View {
             currentDate = newDate
         }
     }
-    
-    func generateTimes() -> [String] {
-        var times: [String] = []
-        
-        for hour in 0..<24 {
-            times.append(String(format: "%02d:00", hour))
-            times.append(String(format: "%02d:30", hour))
-        }
-        return times
-    }
 }
 
+func generateTimes() -> [String] {
+    var times: [String] = []
+    
+    for hour in 0..<24 {
+        times.append(String(format: "%02d:00", hour))
+        times.append(String(format: "%02d:30", hour))
+    }
+    return times
+}
